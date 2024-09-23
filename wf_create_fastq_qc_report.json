@@ -1,6 +1,6 @@
 {
-  "fastq_qc_workflow.centrifuge": "File",
-  "fastq_qc_workflow.create_fastq_qc_report.docker_image": "String (optional, default = \"dbest/create_fastq_qc_report:v0.0.1\")",
-  "fastq_qc_workflow.samplename": "String",
-  "fastq_qc_workflow.stats": "File"
+    "fastq_qc_workflow.centrifuge": "/home/dbest/Analysis/fastq_qc/NC-031124.centrifuge.summary.report.sorted.tsv",
+    "fastq_qc_workflow.create_fastq_qc_report.docker_image": "dbest/create_fastq_qc_report:v0.0.1",
+    "fastq_qc_workflow.samplename": "NC-031124",
+    "fastq_qc_workflow.stats": "/home/dbest/Analysis/fastq_qc/NC-031124.stats"
 }

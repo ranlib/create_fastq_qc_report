@@ -3,7 +3,7 @@ version 1.0
 task create_fastq_qc_report {
   
   # Task description:
-  # This task runs the 'create_fastq_qc_reportvariant_interpretation' tool to generate
+  # This task runs the 'create_fastq_qc_report' tool to generate
   # a quality control (QC) report from given FASTQ statistics and centrifuge output.
   
   input {
@@ -13,19 +13,17 @@ task create_fastq_qc_report {
     String docker_image = "dbest/create_fastq_qc_report:v0.0.1"  # Docker image for the tool
   }
   
-  command {
-    # Running the create_fastq_qc_reportvariant_interpretation tool with the provided input files
-    create_fastq_qc_reportvariant_interpretation \
-      --stats ${stats} \
-      --centrifuge ${centrifuge} \
-      --samplename ${samplename}
-  }
+  command <<<
+    create_fastq_qc_report.py \
+      --stats ~{stats} \
+      --centrifuge ~{centrifuge} \
+      --samplename ~{samplename}
+  >>>
 
   output {
-    File report = "fastq_qc_report.txt"  # Expected QC report output file
+    File report =  "${samplename}_fastq_qc_report.pdf"
   }
 
-  # Runtime settings specifying the Docker container, memory, and CPU requirements
   runtime {
     docker: docker_image
     memory: "4G"
@@ -50,7 +48,7 @@ task create_fastq_qc_report {
       description: "Sample name to be included in the QC report."
     }
     docker_image: {
-      description: "Docker image containing the 'create_fastq_qc_reportvariant_interpretation' tool."
+      description: "Docker image containing the 'create_fastq_qc_report' tool."
     }
   }
 }
