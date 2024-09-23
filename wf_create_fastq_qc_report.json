@@ -1,0 +1,6 @@
+{
+  "fastq_qc_workflow.centrifuge": "File",
+  "fastq_qc_workflow.create_fastq_qc_report.docker_image": "String (optional, default = \"dbest/create_fastq_qc_report:v0.0.1\")",
+  "fastq_qc_workflow.samplename": "String",
+  "fastq_qc_workflow.stats": "File"
+}
