@@ -11,6 +11,8 @@ task create_fastq_qc_report {
     File centrifuge    # Input centrifuge file, typically containing results from the Centrifuge tool
     String samplename  # The name of the sample to be included in the report
     String docker_image = "dbest/create_fastq_qc_report:v0.0.1"  # Docker image for the tool
+    String memory = "4G"
+    Int threads = 1
   }
   
   command <<<
@@ -26,15 +28,15 @@ task create_fastq_qc_report {
 
   runtime {
     docker: docker_image
-    memory: "4G"
-    cpu: 2
+    memory: memory
+    cpu: threads
   }
 
   meta {
     description: "Generates a FASTQ QC report using input stats and centrifuge files."
     author: "Dieter Best"
     email: "dieter.best@cdph.ca.gov"
-    version: "1.0"
+    version: "0.0.1"
   }
 
   parameter_meta {
