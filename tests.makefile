@@ -11,3 +11,6 @@ create_fastq_qc_report_docu:
 
 run_create_fastq_qc_report:
 	miniwdl run --debug --dir test-create_fastq_qc_report --input wf_create_fastq_qc_report.json wf_create_fastq_qc_report.wdl
+
+run_create_fastq_qc_report_cromwell:
+	java -jar ~/Software/cromwell-86.jar run wf_create_fastq_qc_report.wdl -i wf_create_fastq_qc_report.json
