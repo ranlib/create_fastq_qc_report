@@ -1,6 +1,6 @@
 version 1.0
 
-task create_fastq_qc_report {
+task task_create_fastq_qc_report {
   
   # Task description:
   # This task runs the 'create_fastq_qc_report' tool to generate
