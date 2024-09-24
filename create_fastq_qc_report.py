@@ -1,7 +1,10 @@
 #!/usr/bin/env python
+"""
+create pdf report for fastq QC
+"""
 import argparse
 import pandas
-from  fpdf import FPDF
+from fpdf import FPDF
 from output_dataframe_to_pdf import output_dataframe_to_pdf
 
 parser = argparse.ArgumentParser(description="create fastq qc report", prog="create_fastq_qc_reportvariant_interpretation", formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=100))
@@ -11,101 +14,101 @@ parser.add_argument("--samplename", "-n", required=True, type=str, help="Sample 
 parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 args = parser.parse_args()
 
-text_height = 8 
-cell_height = 6
-line_skip = 6
+TEXT_HEIGHT = 8
+CELL_HEIGHT = 6
+LINE_SKIP = 6
 
-pdf = FPDF('P', 'mm', 'Letter')
+pdf = FPDF("P", "mm", "Letter")
 pdf.add_page()
 
-pdf.set_font('helvetica', 'BU', 16)
-pdf.cell(pdf.w, cell_height, 'Fastq QC Report')
-pdf.ln(2*line_skip)
+pdf.set_font("helvetica", "BU", 16)
+pdf.cell(pdf.w, CELL_HEIGHT, "Fastq QC Report")
+pdf.ln(2 * LINE_SKIP)
 
-pdf.set_font('helvetica', 'B', text_height)
-pdf.cell(pdf.w, cell_height, 'Sample Name = ' + args.samplename)
-pdf.ln(2*line_skip)
+pdf.set_font("helvetica", "B", TEXT_HEIGHT)
+pdf.cell(pdf.w, CELL_HEIGHT, "Sample Name = " + args.samplename)
+pdf.ln(2 * LINE_SKIP)
 
-pdf.set_font('helvetica', '', text_height)
-text = f"""1. Purpose:
+pdf.set_font("helvetica", "", TEXT_HEIGHT)
+TEXT = """1. Purpose:
 1.1. Determine sequencing quality from raw fastq files.
 1.2. Determine contamination.
 """
-pdf.multi_cell(pdf.w, cell_height, text)
+pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
-text = f"""2. Tools used:
+TEXT = """2. Tools used:
 2.1. Sequencing quality: seqkit (https://bioinf.shenwei.me/seqkit/)
 2.2. Contamination: centrifuge (https://ccb.jhu.edu/software/centrifuge/manual.shtml)
 """
-pdf.multi_cell(pdf.w, cell_height, text)
+pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
-pdf.cell(pdf.w, cell_height, "3. Results:")
-pdf.ln(line_skip)
+pdf.cell(pdf.w, CELL_HEIGHT, "3. Results:")
+pdf.ln(LINE_SKIP)
 
 #
 # fastq stats
 #
-pdf.cell(pdf.w, cell_height, "3.1. Sequencing quality:")
-pdf.ln(line_skip)
+pdf.cell(pdf.w, CELL_HEIGHT, "3.1. Sequencing quality:")
+pdf.ln(LINE_SKIP)
 
 d = pandas.read_csv(args.stats, sep="\t")
-dropped_cols = ['format', 'type', 'sum_len', 'Q1', 'Q2', 'Q3', 'sum_gap', 'N50', 'N50_num', 'Q20(%)', 'Q30(%)']
+dropped_cols = ["format", "type", "sum_len", "Q1", "Q2", "Q3", "sum_gap", "N50", "N50_num", "Q20(%)", "Q30(%)"]
 d = d.drop(columns=dropped_cols)
 # extract sample names
-d['file'] = d['file'].str.replace(".fastq.gz","",regex=True)
-#d = d.rename(columns={'file': 'samplename'})
+d["file"] = d["file"].str.replace(".fastq.gz", "", regex=True)
+# d = d.rename(columns={'file': 'samplename'})
 output_dataframe_to_pdf(pdf, d, 60, 15)
 
-pdf.set_font('helvetica', '', text_height)
-#text = f"""Status: FAILED
-#Reason: average Q-score < Q20
-#Reference: Q30 for a good sequencing run 
-#"""
-#pdf.multi_cell(pdf.w, cell_height, text)
+pdf.set_font("helvetica", "", TEXT_HEIGHT)
+# TEXT = """Status: FAILED
+# Reason: average Q-score < Q20
+# Reference: Q30 for a good sequencing run
+# """
+# pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
-pdf.cell(pdf.w, cell_height, "Status: FAILED")
+pdf.cell(pdf.w, CELL_HEIGHT, "Status: FAILED")
 pdf.ln()
-pdf.cell(pdf.w, cell_height, "Reason: average Q-score < Q20")
+pdf.cell(pdf.w, CELL_HEIGHT, "Reason: average Q-score < Q20")
 pdf.ln()
-pdf.cell(pdf.w, cell_height, "Reference: Q30 for a good sequencing run")
-pdf.ln(2*line_skip)
+pdf.cell(pdf.w, CELL_HEIGHT, "Reference: Q30 for a good sequencing run")
+pdf.ln(2 * LINE_SKIP)
 
 #
 # taxonomy
 #
-pdf.cell(pdf.w, cell_height, "3.2. Contamination: top 10 contributions")
-pdf.ln(line_skip)
+pdf.cell(pdf.w, CELL_HEIGHT, "3.2. Contamination: top 10 contributions")
+pdf.ln(LINE_SKIP)
 
 t = pandas.read_csv(args.centrifuge, sep="\t")
 # weed out some rows
-keepers = ['species', 'genus']
-t = t.query('taxRank in @keepers')
-# take only the top 10, 
+keepers = ["species", "genus"]
+t = t.query("taxRank in @keepers")
+# take only the top 10,
 # assume sorted by abundance
-t_sorted = t.sort_values('abundance', ascending=False)
+t_sorted = t.sort_values("abundance", ascending=False)
 t_top20 = t_sorted.head(10).copy()
 # truncate name to fit in table cell
-t_top20['name'] = t_top20['name'].str.slice(0,30)
+t_top20["name"] = t_top20["name"].str.slice(0, 30)
 output_dataframe_to_pdf(pdf, t_top20, 50, 25)
 
-text = f"""Status: FAILED
+TEXT = """Status: FAILED
 Reason: reads assigned to contamination
 Reference: number of reads assigned to contamination < 0.1% of minimum required number of reads per sample
 """
-pdf.multi_cell(pdf.w, cell_height, text)
+pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
 #
 # Summary
 #
-pdf.cell(pdf.w, cell_height, "4. Summary:")
-pdf.ln(line_skip)
-text = f"""Status: FAILED
+pdf.cell(pdf.w, CELL_HEIGHT, "4. Summary:")
+pdf.ln(LINE_SKIP)
+TEXT = """Status: FAILED
 Reason: insufficient sequencing quality
 """
-pdf.multi_cell(pdf.w, cell_height, text)
+pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
 #
 # write pdf
 #
-output_file = args.samplename +  '_fastq_qc_report.pdf'
-pdf.output(output_file, 'F')
+output_file = args.samplename + "_fastq_qc_report.pdf"
+pdf.output(output_file, "F")
