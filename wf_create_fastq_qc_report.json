@@ -1,6 +1,6 @@
 {
     "wf_create_fastq_qc_report.centrifuge": ["/home/dbest/Analysis/fastq_qc/NC-031124.centrifuge.summary.report.sorted.tsv"],
-    "wf_create_fastq_qc_report.task_create_fastq_qc_report.docker_image": "dbest/create_fastq_qc_report:v0.0.1",
+    "wf_create_fastq_qc_report.task_create_fastq_qc_report.docker_image": "dbest/create_fastq_qc_report:v0.0.2",
     "wf_create_fastq_qc_report.task_create_fastq_qc_report.memory": "4G",
     "wf_create_fastq_qc_report.task_create_fastq_qc_report.threads": 1,
     "wf_create_fastq_qc_report.samplename": ["NC-031124"],

@@ -10,7 +10,7 @@ task task_create_fastq_qc_report {
     File stats         # Input stats file containing quality control metrics for the FASTQ data
     File centrifuge    # Input centrifuge file, typically containing results from the Centrifuge tool
     String samplename  # The name of the sample to be included in the report
-    String docker_image = "dbest/create_fastq_qc_report:v0.0.1"  # Docker image for the tool
+    String docker_image = "dbest/create_fastq_qc_report:v0.0.2"  # Docker image for the tool
     String memory = "4G"
     Int threads = 1
   }

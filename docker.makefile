@@ -1,4 +1,4 @@
-VER=v0.0.1
+VER=v0.0.2
 
 build:
 	docker build -t dbest/create_fastq_qc_report:$(VER) .
