@@ -1,4 +1,7 @@
-def output_dataframe_to_pdf(pdf, df, sample_column_width:int = 30, values_column_width:int = 15, table_cell_height:int = 6, text_height:int = 8, enable_scientific_notation:bool = True):
+"""loop over pandas dataframe and put values into cells of a pdf object"""
+
+
+def output_dataframe_to_pdf(pdf, df, sample_column_width: int = 30, values_column_width: int = 15, table_cell_height: int = 6, text_height: int = 8, enable_scientific_notation: bool = True):
     """loop over pandas dataframe and put values into cells of a pdf object"""
 
     pdf.set_font("helvetica", "B", text_height)
@@ -12,10 +15,10 @@ def output_dataframe_to_pdf(pdf, df, sample_column_width:int = 30, values_column
     pdf.set_font("helvetica", "", text_height)
 
     # loop over data frame and enter values into table cells
-    for index_row, row in df.iterrows():
+    for _, row in df.iterrows():
         for index_col, col in enumerate(df.columns):
-            if isinstance(row[col],float) and enable_scientific_notation:
-                value = str(format(row[col],".2E"))
+            if isinstance(row[col], float) and enable_scientific_notation:
+                value = str(format(row[col], ".2E"))
             else:
                 value = str(row[col])
             if col in ["samplename", "file", "name", "taxRank"]:

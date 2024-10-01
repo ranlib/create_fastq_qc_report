@@ -60,9 +60,9 @@ d["file"] = d["file"].str.replace(".fastq.gz", "", regex=True)
 output_dataframe_to_pdf(pdf, d, 60, 15, enable_scientific_notation=False)
 
 # get FAIL/PASS
-#print(d.dtypes)
-#print(d.describe())
-status = "FAILED" if d.at[0,'AvgQual'] < 20 or d.at[1,'AvgQual'] < 20 else "PASSED"
+# print(d.dtypes)
+# print(d.describe())
+STATUS = "FAILED" if d.at[0, "AvgQual"] < 20 or d.at[1, "AvgQual"] < 20 else "PASSED"
 
 pdf.set_font("helvetica", "", TEXT_HEIGHT)
 # TEXT = """Status: FAILED
@@ -71,7 +71,7 @@ pdf.set_font("helvetica", "", TEXT_HEIGHT)
 # """
 # pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
-pdf.cell(pdf.w, CELL_HEIGHT, f"Status: {status}")
+pdf.cell(pdf.w, CELL_HEIGHT, f"Status: {STATUS}")
 pdf.ln()
 pdf.cell(pdf.w, CELL_HEIGHT, "Reason: average Q-score < Q20 for forward or reverse reads")
 pdf.ln()
@@ -97,11 +97,11 @@ t_top10["name"] = t_top10["name"].str.slice(0, 30)
 output_dataframe_to_pdf(pdf, t_top10, 50, 25)
 
 # get FAIL/PASS
-#print(t.dtypes)
-#print(t.describe())
-status = "FAILED"
+# print(t.dtypes)
+# print(t.describe())
+STATUS = "FAILED"
 
-TEXT = f"""Status: {status}
+TEXT = f"""Status: {STATUS}
 Reason: reads assigned to contamination
 Reference: number of reads assigned to contamination < 0.1% of minimum required number of reads per sample
 """
