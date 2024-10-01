@@ -21,4 +21,41 @@ workflow wf_create_fastq_qc_report {
   output {
     Array[File] qc_report = task_create_fastq_qc_report.report
   }
+
+  meta {
+    description: "Generates a FASTQ QC report using input stats and centrifuge files."
+    author: "Dieter Best"
+    email: "dieter.best@cdph.ca.gov"
+  }
+
+  parameter_meta {
+    # inputs
+    stats: {
+      description: "The statistics file generated from FASTQ quality control.",
+      category: "required"
+    }
+    centrifuge: {
+      description: "The centrifuge output file, containing classification results.",
+      category: "required"
+    }
+    samplename: {
+      description: "Sample name to be included in the QC report.",
+      category: "required"
+    }
+    docker_image: {
+      description: "Docker image containing the 'create_fastq_qc_report' tool.",
+      category: "optional"
+    }
+    memory: {
+      description: "RAM requested for the tool.",
+      category: "optional"
+    }
+
+    # outputs
+    qc_report: {
+      description: "Result QC report in pdf format.",
+      category: "other"
+    }
+    
+  }
 }

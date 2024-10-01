@@ -12,7 +12,6 @@ task task_create_fastq_qc_report {
     String samplename  # The name of the sample to be included in the report
     String docker_image = "dbest/create_fastq_qc_report:v0.0.2"  # Docker image for the tool
     String memory = "4G"
-    Int threads = 1
   }
   
   command <<<
@@ -29,28 +28,42 @@ task task_create_fastq_qc_report {
   runtime {
     docker: docker_image
     memory: memory
-    cpu: threads
   }
 
   meta {
     description: "Generates a FASTQ QC report using input stats and centrifuge files."
     author: "Dieter Best"
     email: "dieter.best@cdph.ca.gov"
-    version: "0.0.1"
   }
 
   parameter_meta {
+    # inputs
     stats: {
-      description: "The statistics file generated from FASTQ quality control."
+      description: "The statistics file generated from FASTQ quality control.",
+      category: "required"
     }
     centrifuge: {
-      description: "The centrifuge output file, containing classification results."
+      description: "The centrifuge output file, containing classification results.",
+      category: "required"
     }
     samplename: {
-      description: "Sample name to be included in the QC report."
+      description: "Sample name to be included in the QC report.",
+      category: "required"
     }
     docker_image: {
-      description: "Docker image containing the 'create_fastq_qc_report' tool."
+      description: "Docker image containing the 'create_fastq_qc_report' tool.",
+      category: "advanced"
     }
+    memory: {
+      description: "RAM requested for the tool.",
+      category: "advanced"
+    }
+
+    # outputs
+    report: {
+      description: "Result QC report in pdf format.",
+      category: "other"
+    }
+    
   }
 }

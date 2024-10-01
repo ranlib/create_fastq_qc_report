@@ -1,5 +1,5 @@
 # wf_create_fastq_qc_report
-
+Generates a FASTQ QC report using input stats and centrifuge files.
 
 ## Inputs
 
@@ -7,20 +7,20 @@
 <p name="wf_create_fastq_qc_report.centrifuge">
         <b>wf_create_fastq_qc_report.centrifuge</b><br />
         <i>Array[File]+ &mdash; Default: None</i><br />
-        ???
+        The centrifuge output file, containing classification results.
 </p>
 <p name="wf_create_fastq_qc_report.samplename">
         <b>wf_create_fastq_qc_report.samplename</b><br />
         <i>Array[String]+ &mdash; Default: None</i><br />
-        ???
+        Sample name to be included in the QC report.
 </p>
 <p name="wf_create_fastq_qc_report.stats">
         <b>wf_create_fastq_qc_report.stats</b><br />
         <i>Array[File]+ &mdash; Default: None</i><br />
-        ???
+        The statistics file generated from FASTQ quality control.
 </p>
 
-### Other inputs
+### Advanced inputs
 <details>
 <summary> Show/Hide </summary>
 <p name="wf_create_fastq_qc_report.task_create_fastq_qc_report.docker_image">
@@ -31,12 +31,7 @@
 <p name="wf_create_fastq_qc_report.task_create_fastq_qc_report.memory">
         <b>wf_create_fastq_qc_report.task_create_fastq_qc_report.memory</b><br />
         <i>String &mdash; Default: "4G"</i><br />
-        ???
-</p>
-<p name="wf_create_fastq_qc_report.task_create_fastq_qc_report.threads">
-        <b>wf_create_fastq_qc_report.task_create_fastq_qc_report.threads</b><br />
-        <i>Int &mdash; Default: 1</i><br />
-        ???
+        RAM requested for the tool.
 </p>
 </details>
 
@@ -44,7 +39,7 @@
 <p name="wf_create_fastq_qc_report.qc_report">
         <b>wf_create_fastq_qc_report.qc_report</b><br />
         <i>Array[File]</i><br />
-        ???
+        Result QC report in pdf format.
 </p>
 
 <hr />
