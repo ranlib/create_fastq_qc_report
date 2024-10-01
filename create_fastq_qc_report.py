@@ -57,7 +57,12 @@ d = d.drop(columns=dropped_cols)
 # extract sample names
 d["file"] = d["file"].str.replace(".fastq.gz", "", regex=True)
 # d = d.rename(columns={'file': 'samplename'})
-output_dataframe_to_pdf(pdf, d, 60, 15)
+output_dataframe_to_pdf(pdf, d, 60, 15, enable_scientific_notation=False)
+
+# get FAIL/PASS
+#print(d.dtypes)
+#print(d.describe())
+status = "FAILED" if d.at[0,'AvgQual'] < 20 or d.at[1,'AvgQual'] < 20 else "PASSED"
 
 pdf.set_font("helvetica", "", TEXT_HEIGHT)
 # TEXT = """Status: FAILED
@@ -66,9 +71,9 @@ pdf.set_font("helvetica", "", TEXT_HEIGHT)
 # """
 # pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
-pdf.cell(pdf.w, CELL_HEIGHT, "Status: FAILED")
+pdf.cell(pdf.w, CELL_HEIGHT, f"Status: {status}")
 pdf.ln()
-pdf.cell(pdf.w, CELL_HEIGHT, "Reason: average Q-score < Q20")
+pdf.cell(pdf.w, CELL_HEIGHT, "Reason: average Q-score < Q20 for forward or reverse reads")
 pdf.ln()
 pdf.cell(pdf.w, CELL_HEIGHT, "Reference: Q30 for a good sequencing run")
 pdf.ln(2 * LINE_SKIP)
@@ -76,7 +81,7 @@ pdf.ln(2 * LINE_SKIP)
 #
 # taxonomy
 #
-pdf.cell(pdf.w, CELL_HEIGHT, "3.2. Contamination: top 10 contributions")
+pdf.cell(pdf.w, CELL_HEIGHT, "3.2. Contamination: top 10 contributions at most")
 pdf.ln(LINE_SKIP)
 
 t = pandas.read_csv(args.centrifuge, sep="\t")
@@ -86,12 +91,17 @@ t = t.query("taxRank in @keepers")
 # take only the top 10,
 # assume sorted by abundance
 t_sorted = t.sort_values("abundance", ascending=False)
-t_top20 = t_sorted.head(10).copy()
+t_top10 = t_sorted.head(10).copy()
 # truncate name to fit in table cell
-t_top20["name"] = t_top20["name"].str.slice(0, 30)
-output_dataframe_to_pdf(pdf, t_top20, 50, 25)
+t_top10["name"] = t_top10["name"].str.slice(0, 30)
+output_dataframe_to_pdf(pdf, t_top10, 50, 25)
 
-TEXT = """Status: FAILED
+# get FAIL/PASS
+#print(t.dtypes)
+#print(t.describe())
+status = "FAILED"
+
+TEXT = f"""Status: {status}
 Reason: reads assigned to contamination
 Reference: number of reads assigned to contamination < 0.1% of minimum required number of reads per sample
 """
