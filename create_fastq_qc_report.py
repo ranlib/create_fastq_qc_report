@@ -15,20 +15,23 @@ parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output
 args = parser.parse_args()
 
 TEXT_HEIGHT = 8
-CELL_HEIGHT = 6
-LINE_SKIP = 6
+CELL_HEIGHT = 5
+LINE_SKIP = 5
 
 pdf = FPDF("P", "mm", "Letter")
 pdf.add_page()
 
+# title
 pdf.set_font("helvetica", "BU", 16)
 pdf.cell(pdf.w, CELL_HEIGHT, "Fastq QC Report")
 pdf.ln(2 * LINE_SKIP)
 
+# body, samplename
 pdf.set_font("helvetica", "B", TEXT_HEIGHT)
 pdf.cell(pdf.w, CELL_HEIGHT, "Sample Name = " + args.samplename)
 pdf.ln(2 * LINE_SKIP)
 
+# body
 pdf.set_font("helvetica", "", TEXT_HEIGHT)
 TEXT = """1. Purpose:
 1.1. Determine sequencing quality from raw fastq files.
@@ -37,8 +40,14 @@ TEXT = """1. Purpose:
 pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
 TEXT = """2. Tools used:
-2.1. Sequencing quality: seqkit (https://bioinf.shenwei.me/seqkit/)
-2.2. Contamination: centrifuge (https://ccb.jhu.edu/software/centrifuge/manual.shtml)
+2.1. Source code of analysis: https://github.com/ranlib/fastq_qc
+2.1.1. Documentation for input parameters: https://github.com/ranlib/fastq_qc/blob/master/wf_fastq_qc.md
+2.1.2. Input parameters file: https://github.com/ranlib/fastq_qc/blob/master/wf_fastq_qc.json
+2.1.3. Note: No quality score trimming of input sequences performed by default since input sequences already quality score trimmed (not recommended).
+2.2. External tools are used:
+2.2.1. Sequence quality selection: cutadapt (https://github.com/marcelm/cutadapt)
+2.2.2. Sequencing quality evaluation: seqkit (https://bioinf.shenwei.me/seqkit/)
+2.2.3. Contamination: centrifuge (https://ccb.jhu.edu/software/centrifuge/manual.shtml)
 """
 pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
 
@@ -57,7 +66,7 @@ d = d.drop(columns=dropped_cols)
 # extract sample names
 d["file"] = d["file"].str.replace(".fastq.gz", "", regex=True)
 # d = d.rename(columns={'file': 'samplename'})
-output_dataframe_to_pdf(pdf, d, 60, 15, enable_scientific_notation=False)
+output_dataframe_to_pdf(pdf, d, 60, 15, table_cell_height=4, text_height=8, enable_scientific_notation=False)
 
 # get FAIL/PASS
 # print(d.dtypes)
@@ -81,7 +90,7 @@ pdf.ln(2 * LINE_SKIP)
 #
 # taxonomy
 #
-pdf.cell(pdf.w, CELL_HEIGHT, "3.2. Contamination: top 10 contributions at most")
+pdf.cell(pdf.w, CELL_HEIGHT, "3.2. Contamination: top 10 contributions at most, for informational purposes only")
 pdf.ln(LINE_SKIP)
 
 t = pandas.read_csv(args.centrifuge, sep="\t")
@@ -94,25 +103,26 @@ t_sorted = t.sort_values("abundance", ascending=False)
 t_top10 = t_sorted.head(10).copy()
 # truncate name to fit in table cell
 t_top10["name"] = t_top10["name"].str.slice(0, 30)
-output_dataframe_to_pdf(pdf, t_top10, 50, 25)
+output_dataframe_to_pdf(pdf, t_top10, 50, 25, table_cell_height=4, text_height=8)
 
 # get FAIL/PASS
 # print(t.dtypes)
 # print(t.describe())
 STATUS = "FAILED"
-
 TEXT = f"""Status: {STATUS}
 Reason: reads assigned to contamination
 Reference: number of reads assigned to contamination < 0.1% of minimum required number of reads per sample
 """
-pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
+#pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
+# since taxonomy for informational puroses only
 
 #
 # Summary
 #
-pdf.cell(pdf.w, CELL_HEIGHT, "4. Summary:")
-pdf.ln(LINE_SKIP)
-TEXT = """Status: FAILED
+#pdf.cell(pdf.w, CELL_HEIGHT, "4. Summary:")
+#pdf.ln(LINE_SKIP)
+TEXT = """4. Summary:
+Status: FAILED
 Reason: insufficient sequencing quality
 """
 pdf.multi_cell(pdf.w, CELL_HEIGHT, TEXT)
